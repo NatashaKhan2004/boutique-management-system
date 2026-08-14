@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Orders</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .orders-container { max-width: 900px; margin: 30px auto; padding: 20px; background: #fff; border-radius: 8px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        th, td { padding: 12px; border: 1px solid #ddd; text-align: left; }
+        th { background-color: #f4f4f4; }
+        .items-list { margin: 0; padding-left: 15px; }
+    </style>
+</head>
+<body>
+
+<div class="navbar">
+    <a href="index.html">Home</a>
+    <a href="login.html">Login</a>
+    <a href="addproduct.html">Add Products</a>
+    <a href="orders.html">Orders</a>
+    <a href="cart.html">Cart</a>
+    <a href="about.html">About Us</a>
+    <a href="contactus.html">Contact Us</a>
+    <a href="products.html">Products</a>
+</div>
+
+<div class="orders-container">
+    <h2>All Placed Orders</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Order ID</th>
+                <th>Customer</th>
+                <th>Phone / Address</th>
+                <th>Items Ordered</th>
+                <th>Total ($)</th>
+                <th>Date</th>
+            </tr>
+        </thead>
+        <tbody id="ordersTableBody"></tbody>
+    </table>
+</div>
+
+<div class="footer">
+    <p><b>Boutique Management System by Attiqa, Natasha & Tooba</b></p>
+    <p>Email: boutique@gmail.com | Phone: 0318-2345567 | Islamabad, Pakistan</p>
+</div>
+
+<script>
+    function renderOrders() {
+        const orders = JSON.parse(localStorage.getItem('orders')) || [];
+        const tableBody = document.getElementById('ordersTableBody');
+
+        if (orders.length === 0) {
+            tableBody.innerHTML = `<tr><td colspan="6" style="text-align:center;">No orders placed yet!</td></tr>`;
+            return;
+        }
+
+        tableBody.innerHTML = orders.map(order => `
+            <tr>
+                <td><b>${order.orderId}</b></td>
+                <td>${order.customerName}</td>
+                <td>${order.phone}<br><small>${order.address}</small></td>
+                <td>
+                    <ul class="items-list">
+                        ${order.items.map(item => `<li>${item.name} (x${item.quantity}) - $${item.price * item.quantity}</li>`).join('')}
+                    </ul>
+                </td>
+                <td><b>$${order.total}</b></td>
+                <td>${order.date}</td>
+            </tr>
+        `).join('');
+    }
+
+    renderOrders();
+</script>
+
+</body>
+</html>

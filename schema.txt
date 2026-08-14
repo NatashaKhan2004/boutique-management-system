@@ -1,0 +1,29 @@
+// Example: Product Object
+product = {
+  id: 101,
+  name: "Summer Silk Dress",
+  price: 2500,        // Number (quotes "$2500" me mat likhna)
+  quantity: 15,       // Number
+  category: "Dresses"
+}
+
+// Example: Cart Item Object
+cartItem = {
+  productId: 101,
+  name: "Summer Silk Dress",
+  price: 2500,        // Direct number
+  quantity: 2
+}
+
+// Example: Order Object
+order = {
+  orderId: "ORD-9921",
+  customerName: "Ayesha Khan",
+  phone: "03001234567",
+  address: "House 12, Street 4, Islamabad",
+  items: [
+    { productId: 101, name: "Summer Silk Dress", price: 2500, quantity: 2 }
+  ],
+  total: 5000,         // price * quantity ka sum
+  date: "2026-08-09"
+}

@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Page Title</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+<div class="navbar">
+    <a href="index.html">Home</a>
+    <a href="login.html">Login</a>
+    <a href="addProduct.html">Add Products</a>
+    <a href="orders.html">Orders</a>
+    <a href="cart.html">Cart</a>
+    <a href="about.html">About Us</a>
+    <a href="contactus.html">Contact Us</a>
+    <a href="products.html">products</a>
+</div>
+
+<div class="contact-main">
+    <h2>📞 Contact Us</h2>
+
+    <div class="contact-form-wrapper"> 
+        <form class="contact-form" id="contactForm">
+            <input type="text" id="userName" placeholder="Your Full Name" required>
+            <input type="email" id="userEmail" placeholder="Your Email Address" required>
+            <input type="text" id="userSubject" placeholder="Subject" required>
+            <textarea id="userMessage" rows="5" placeholder="Your Message" style="padding: 12px; border-radius: 8px; border: 1px solid gray; font-size: 1em; width: 100%; box-sizing: border-box;"></textarea>
+            
+            <div style="display: flex; gap: 15px; margin-top: 10px;">
+                <button type="submit" class="submit-btn" style="flex: 1;">📤 Send Message</button>
+                <button type="button" class="reset-btn" onclick="clearForm()" style="flex: 1;">🗑️ Clear Form</button>
+            </div>
+        </form>
+    </div>
+    
+    <div style="margin-top: 30px; padding: 20px; background: rgba(0,0,0,0.05); border-radius: 10px;">
+        <h3 style="color: brown; font-family: 'Dancing Script', cursive;">📍 Get in Touch</h3>
+        <table width="100%" border="0">
+            <tr>
+                <td width="25%"><b>🏠 Address:</b></td>
+                <td>Islamabad, Pakistan</td>
+                <td width="25%"><b>📧 Email:</b></td>
+                <td>boutique@gmail.com</td>
+            </tr>
+            <tr>
+                <td><b>📞 Phone:</b></td>
+                <td>0318-2345567</td>
+                <td><b>⏰ Hours:</b></td>
+                <td>Mon - Sat (10AM - 8PM)</td>
+            </tr>
+        </table>
+    </div>
+</div>
+
+<div class="footer">
+    <p><b>Boutique Management System by Attiqa, Natasha & Tooba</b></p>
+    <p>Email: boutique@gmail.com | Phone: 0318-2345567 | Islamabad, Pakistan</p>
+</div>
+
+<script>
+    const form = document.getElementById('contactForm');
+    
+    function clearForm() {
+        document.getElementById('userName').value = '';
+        document.getElementById('userEmail').value = '';
+        document.getElementById('userSubject').value = '';
+        document.getElementById('userMessage').value = '';
+    }
+    
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        let name = document.getElementById('userName').value;
+        let email = document.getElementById('userEmail').value;
+        let subject = document.getElementById('userSubject').value;
+        let message = document.getElementById('userMessage').value;
+        
+        // Validation
+        if (name === '') {
+            alert('❌ Please enter your name!');
+            return;
+        }
+        if (email === '') {
+            alert('❌ Please enter your email!');
+            return;
+        }
+        if (subject === '') {
+            alert('❌ Please enter subject!');
+            return;
+        }
+        if (message === '') {
+            alert('❌ Please enter your message!');
+            return;
+        }       
+        alert('✅ Thank you ' + name + '!\n\nWe have received your message.\nWe will contact you at ' + email + '\n\n📝 Subject: ' + subject + '\n💬 Message: ' + message);
+        
+        clearForm();
+    });
+</script>
+
+</body>
+</html>
