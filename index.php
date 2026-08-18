@@ -1,22 +1,32 @@
+<?php
+session_start();
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Page Title</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Home - Boutique Management System</title>
+    <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
 <div class="navbar">
-    <a href="home.html">Home</a>
-    <a href="login.html">Login</a>
+    <a href="index.php">Home</a>
+    <a href="products.html">Products</a>
     <a href="addProduct.html">Add Products</a>
     <a href="orders.html">Orders</a>
     <a href="cart.html">Cart</a>
     <a href="about.html">About Us</a>
     <a href="contactus.html">Contact Us</a>
-    <a href="products.html">products</a>
+
+    <?php if (isset($_SESSION['user_id'])): ?>
+        <span style="color: white; font-weight: 600; margin-left: 10px;">Welcome, <?php echo htmlspecialchars($_SESSION['username']); ?></span>
+        <a href="logout.php" style="color: tomato; font-weight: bold;">Logout</a>
+    <?php else: ?>
+        <a href="login.php">Login</a>
+        <a href="signup.php">Signup</a>
+    <?php endif; ?>
 </div>
 
 <div class="home-container">
@@ -47,7 +57,7 @@ let images = [
     "https://i.pinimg.com/736x/dd/ab/0f/ddab0f3ae382eba51c3a24526ce823a8.jpg",
     "https://i.pinimg.com/1200x/5d/58/2e/5d582e90125f0e174d43da1deed675ce.jpg",
     "https://i.pinimg.com/736x/fe/99/00/fe990030704be07268bd90d19c8d58a3.jpg",
-    "https://i.pinimg.com/736x/3d/bb/1b/3dbb1b8c9e662d8cf1718a5d3352880b.jpg",
+    "https://i.pinimg.com/736x/3d/bb/1b/3dbb1b8c9e662d8cf1718a5d3352880b.jpg"
 ];
 
 let currentIndex = 0;
