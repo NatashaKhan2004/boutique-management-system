@@ -7,19 +7,11 @@ session_start();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Home - Boutique Management System</title>
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="style.css">
 </head>
+<?php include 'navbar.php'; ?>
 <body>
-
-<div class="navbar">
-    <a href="index.php">Home</a>
-    <a href="products.html">Products</a>
-    <a href="addProduct.html">Add Products</a>
-    <a href="orders.html">Orders</a>
-    <a href="cart.html">Cart</a>
-    <a href="about.html">About Us</a>
-    <a href="contactus.html">Contact Us</a>
-
+    
     <?php if (isset($_SESSION['user_id'])): ?>
         <span style="color: white; font-weight: 600; margin-left: 10px;">Welcome, <?php echo htmlspecialchars($_SESSION['username']); ?></span>
         <a href="logout.php" style="color: tomato; font-weight: bold;">Logout</a>
@@ -48,7 +40,7 @@ session_start();
 
 <div class="footer">
     <p><b>Boutique Management System by Attiqa, Natasha & Tooba</b></p>
-    <p>Email: boutique@gmail.com | Phone: 0318-2345567 | Islamabad, Pakistan</p>
+    <p>Email: boutique@gmail.com | Phone: +923479130544 | Islamabad, Pakistan</p>
 </div>
 
 <script>
