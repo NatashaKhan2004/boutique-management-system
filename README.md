@@ -1,47 +1,48 @@
 # Boutique Management System
 
-A dynamic, web-based e-commerce platform built to manage product inventory, shopping carts, checkout operations, and order tracking seamlessly.
+A full-stack e-commerce web application built with PHP and MySQL to handle product inventory, session-based shopping carts, secure checkout pipelines, and order tracking.
 
 ---
 
-## 🚀 How to Run the Project
+## 🛠️ Tech Stack & Prerequisites
 
-1. Clone or download this project repository to your local system.
-2. Open the project folder.
-3. Launch `addproduct.html` or `home.html` in any modern web browser (Google Chrome, Edge, Firefox).
-4. No additional backend server or database setup is required — all data is saved and fetched dynamically using browser **LocalStorage**.
-
----
-
-## ✅ Features Completed So Far
-
-* **Product Management (Day 3):**
-  * Adding products via `addproduct.html` saves entries directly into `localStorage`.
-  * Dynamic rendering of product cards on `products.html` with stock display and product deletion.
-* **Shopping Cart & Inventory Sync (Day 4):**
-  * `cart.html` dynamically loads selected cart items from `localStorage`.
-  * Real-time calculation of subtotals and grand total.
-  * Live quantity adjustments and item removal with automatic stock count restoration.
-* **Checkout & Orders Tracking (Day 5):**
-  * Form validation on checkout to capture customer delivery details.
-  * Successful order placement saves complete order records, clears the active cart, and redirects to `orders.html`.
-  * `orders.html` displays a dynamic table containing all saved order details, items, customer info, and order date.
+* **Frontend:** HTML5, CSS3, JavaScript
+* **Backend:** PHP (Native / Procedural)
+* **Database:** MySQL / phpMyAdmin
+* **Server Environment:** XAMPP / WAMP / Apache
 
 ---
 
-## 🛠️ Weekly Log & Debugging Tracker
+## 🚀 Quick Setup Guide
 
-### Friday Log: What Broke & How It Was Fixed
-* **Issue 1:** Form submissions were triggering alert popups instead of saving data persistently.  
-  * **Fix:** Linked form fields to event listeners and mapped payload objects into `localStorage` using `JSON.stringify()`.
-* **Issue 2:** Adding a second product was overwriting the existing product array in `localStorage`.  
-  * **Fix:** Initialized empty arrays for missing keys and parsed existing stored arrays using `JSON.parse()` before pushing new data.
-* **Issue 3:** Cart table rows remained hardcoded and failed to update price calculations dynamically.  
-  * **Fix:** Wrote a dynamic `renderCart()` JavaScript function to calculate totals directly from array state.
-* **Issue 4:** Removing items from the cart did not reflect on the main stock page.  
-  * **Fix:** Synchronized `cart.html` actions with the `products` array in `localStorage` to restore inventory levels upon item removal.
-* **Issue 5:** Panel UI cutoff made the `Application` tab hidden in Developer Tools during testing.  
-  * **Fix:** Used the tab menu overflow button `>>` and expanded DevTools to inspect storage state directly.
+1. **Move Project Files:** Place the repository folder inside your local server directory (`htdocs/boutique-management-system`).
+2. **Database Setup:** 
+   * Open **phpMyAdmin** and create a database named `boutique_db`.
+   * Import the SQL schema queries provided in `schema.txt`.
+3. **Database Credentials:** Ensure `db.php` has correct connection parameters (`localhost`, `root`, ``, `boutique_db`).
+4. **Launch:** Start Apache & MySQL in XAMPP and navigate to `http://localhost/boutique-management-system/index.php`.
 
 ---
 
+## ✨ Core Features
+
+* **Authentication & Security:** User Signup, Login, Session Persistence, Logout (`logout.php`), and Protected Routes (`addproduct.php`, `checkout.php`).
+* **Catalog & Product Management:** Dynamic MySQL-driven CRUD operations for inventory listing and management.
+* **Shopping Cart System:** Session-persistent cart synced with a global navbar counter (`navbar.php`).
+* **Relational Order Processing:** Multi-table checkout pipeline saving order records to `orders` and `order_items` tables.
+
+---
+
+## 🛠️ Weekly Log & Debugging Highlights
+
+* **Schema Foreign Key Alignment:** Resolved missing database column errors (`Unknown column 'email'`) by executing defensive table schema scripts.
+* **Route Protection:** Enforced session guard checks (`session_start()`, `$_SESSION['user_id']`) at script heads to block unauthorized URL access.
+* **Navbar State Synchronization:** Replaced static headers with a dynamic `navbar.php` component using `array_sum()` for realtime cart item counts.
+* **Transactional Checkout Handling:** Integrated MySQLi prepared statements to process sequential relational inserts during checkout.
+
+---
+
+## 👥 Project Collaborators
+
+
+ **Natasha**
