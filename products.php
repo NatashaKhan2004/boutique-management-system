@@ -2,59 +2,56 @@
 session_start();
 include 'db.php';
 
-$message = "";
-$error = "";
-
-// 1. Delete Product Logic
-if (isset($_GET['action']) && $_GET['action'] == 'delete' && isset($_GET['id'])) {
-    $delete_id = intval($_GET['id']);
-    
-    $stmt = $conn->prepare("DELETE FROM products WHERE id = ?");
-    $stmt->bind_param("i", $delete_id);
-    
-    if ($stmt->execute()) {
-        $message = "✅ Product deleted successfully!";
-    } else {
-        $error = "❌ Failed to delete product: " . $conn->error;
-    }
-    $stmt->close();
+// Cart initialization
+if (!isset($_SESSION['cart'])) {
+    $_SESSION['cart'] = [];
 }
 
-// 2. Add to Cart Logic (PHP Session based)
-if (isset($_GET['action']) && $_GET['action'] == 'add_to_cart' && isset($_GET['id'])) {
-    $product_id = intval($_GET['id']);
+$msg = "";
+
+// Handle Add to Cart / Buy
+if (isset($_POST['add_to_cart'])) {
+    $product_id = intval($_POST['product_id']);
     
     $stmt = $conn->prepare("SELECT * FROM products WHERE id = ?");
     $stmt->bind_param("i", $product_id);
     $stmt->execute();
-    $result = $stmt->get_result();
-    
-    if ($product = $result->fetch_assoc()) {
-        if ($product['stock'] > 0) {
-            if (!isset($_SESSION['cart'])) {
-                $_SESSION['cart'] = array();
-            }
-            
-            if (isset($_SESSION['cart'][$product_id])) {
-                $_SESSION['cart'][$product_id]['quantity'] += 1;
-            } else {
-                $_SESSION['cart'][$product_id] = array(
-                    'name' => $product['name'],
-                    'price' => $product['price'],
-                    'quantity' => 1
-                );
-            }
-            $message = "🛒 " . htmlspecialchars($product['name']) . " added to cart!";
+    $prod = $stmt->get_result()->fetch_assoc();
+    $stmt->close();
+
+    if ($prod) {
+        if (isset($_SESSION['cart'][$product_id])) {
+            $_SESSION['cart'][$product_id]['quantity'] += 1;
         } else {
-            $error = "❌ Sorry, this item is out of stock!";
+            $_SESSION['cart'][$product_id] = [
+                'id' => $prod['id'],
+                'name' => $prod['name'],
+                'price' => $prod['price'],
+                'quantity' => 1
+            ];
         }
+
+        // Deduct stock if stock column exists
+        $conn->query("UPDATE products SET stock = stock - 1 WHERE id = $product_id AND stock > 0");
+
+        $msg = "Product added to cart successfully!";
+    }
+}
+
+// Handle Delete Product
+if (isset($_POST['delete_product'])) {
+    $product_id = intval($_POST['product_id']);
+    $stmt = $conn->prepare("DELETE FROM products WHERE id = ?");
+    $stmt->bind_param("i", $product_id);
+    if ($stmt->execute()) {
+        $msg = "Product deleted successfully.";
     }
     $stmt->close();
 }
 
-// Fetch all products from MySQL database
-$query = "SELECT * FROM products ORDER BY id DESC";
-$products_result = $conn->query($query);
+// Fetch products
+$sql = "SELECT * FROM products ORDER BY id DESC";
+$result = $conn->query($sql);
 ?>
 
 <!DOCTYPE html>
@@ -63,98 +60,76 @@ $products_result = $conn->query($query);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Products - Boutique Management System</title>
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="style.css">
     <style>
-        .products-grid {
+        .products-container {
             display: flex;
             flex-wrap: wrap;
-            justify-content: center;
             gap: 20px;
-            padding: 30px;
+            justify-content: center;
+            padding: 30px 20px;
         }
-
         .product-card {
-            background: rgba(255, 255, 255, 0.9);
-            border: 1px solid #ddd;
-            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.95);
+            width: 250px;
             padding: 20px;
-            width: 240px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
             text-align: center;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
         }
-
         .product-card h3 {
-            margin-bottom: 10px;
+            margin-top: 0;
             color: #333;
+            font-size: 20px;
         }
-
-        .product-card p {
-            margin: 5px 0;
-            color: #666;
-        }
-
         .product-card .price {
-            font-weight: bold;
             color: #d9534f;
-            font-size: 1.1em;
+            font-size: 18px;
+            font-weight: bold;
+            margin: 10px 0;
         }
-
-        .btn-add {
-            background-color: #008cba;
+        .product-card .desc {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 15px;
+            min-height: 40px;
+        }
+        .btn-group-card {
+            display: flex;
+            gap: 8px;
+            margin-top: 10px;
+        }
+        .btn-buy {
+            flex: 1;
+            background-color: #28a745;
             color: white;
             border: none;
-            padding: 8px 15px;
-            margin-top: 10px;
+            padding: 9px 5px;
             border-radius: 5px;
             cursor: pointer;
-            text-decoration: none;
-            display: inline-block;
-            transition: 0.3s;
+            font-weight: bold;
+            font-size: 13px;
         }
-
-        .btn-add:hover {
-            background-color: #005f73;
-        }
-
+        .btn-buy:hover { background-color: #218838; }
         .btn-delete {
+            flex: 1;
             background-color: #dc3545;
             color: white;
             border: none;
-            padding: 8px 12px;
-            margin-top: 10px;
-            margin-left: 5px;
+            padding: 9px 5px;
             border-radius: 5px;
             cursor: pointer;
-            text-decoration: none;
-            display: inline-block;
-            transition: 0.3s;
+            font-weight: bold;
+            font-size: 13px;
         }
-
-        .btn-delete:hover {
-            background-color: #a71d2a;
-        }
-
-        .btn-disabled {
-            background-color: #ccc;
-            color: #666;
-            padding: 8px 15px;
-            margin-top: 10px;
-            border-radius: 5px;
-            display: inline-block;
-            cursor: not-allowed;
-        }
+        .btn-delete:hover { background-color: #c82333; }
     </style>
 </head>
+<?php include 'navbar.php'; ?>
 <body>
-
-<div class="navbar">
-    <a href="index.php">Home</a>
-    <a href="products.php">Products</a>
-    <a href="addproduct.php">Add Products</a>
-    <a href="orders.php">Orders</a>
-    <a href="cart.php">Cart</a>
-    <a href="about.php">About Us</a>
-    <a href="contactus.php">Contact Us</a>
 
     <?php if (isset($_SESSION['user_id'])): ?>
         <span style="color: white; font-weight: 600; margin-left: 10px;">Welcome, <?php echo htmlspecialchars($_SESSION['username']); ?></span>
@@ -165,42 +140,43 @@ $products_result = $conn->query($query);
     <?php endif; ?>
 </div>
 
-<h1 style="text-align: center; margin-top: 20px; font-family: cursive;">Our Products</h1>
+<h2 style="text-align: center; margin-top: 20px; color: #333; font-family: cursive, sans-serif; font-size: 32px;">Our Product Collection</h2>
 
-<?php if (!empty($message)): ?>
-    <p style="color: green; text-align: center; font-weight: bold; margin-top: 10px;"><?php echo $message; ?></p>
+<?php if (!empty($msg)): ?>
+    <p style="color: green; text-align: center; font-weight: bold; background: #e6ffe6; padding: 10px; max-width: 400px; margin: 10px auto; border-radius: 5px;"><?php echo $msg; ?></p>
 <?php endif; ?>
 
-<?php if (!empty($error)): ?>
-    <p style="color: red; text-align: center; font-weight: bold; margin-top: 10px;"><?php echo $error; ?></p>
-<?php endif; ?>
-
-<div id="productsContainer" class="products-grid">
-    <?php if ($products_result && $products_result->num_rows > 0): ?>
-        <?php while ($row = $products_result->fetch_assoc()): ?>
+<div class="products-container">
+    <?php if ($result && $result->num_rows > 0): ?>
+        <?php while ($row = $result->fetch_assoc()): ?>
             <div class="product-card">
-                <h3><?php echo htmlspecialchars($row['name']); ?></h3>
-                <p>Category: <b><?php echo htmlspecialchars($row['category']); ?></b></p>
-                <p class="price">Price: $<?php echo number_format($row['price'], 2); ?></p>
-                <p>Available Stock: <b><?php echo htmlspecialchars($row['stock']); ?></b></p>
+                <div>
+                    <h3><?php echo htmlspecialchars($row['name']); ?></h3>
+                    <p class="desc"><?php echo htmlspecialchars($row['description'] ?? 'No description available.'); ?></p>
+                    <p class="price">Price: PKR <?php echo number_format($row['price'], 2); ?></p>
+                </div>
 
-                <?php if ($row['stock'] > 0): ?>
-                    <a href="products.php?action=add_to_cart&id=<?php echo $row['id']; ?>" class="btn-add">Add to Cart</a>
-                <?php else: ?>
-                    <span class="btn-disabled">Out of Stock</span>
-                <?php endif; ?>
+                <div class="btn-group-card">
+                    <form action="products.php" method="POST" style="flex: 1;">
+                        <input type="hidden" name="product_id" value="<?php echo $row['id']; ?>">
+                        <button type="submit" name="add_to_cart" class="btn-buy">Buy / Add Cart</button>
+                    </form>
 
-                <a href="products.php?action=delete&id=<?php echo $row['id']; ?>" class="btn-delete" onclick="return confirm('Are you sure you want to delete this product?');">Delete</a>
+                    <form action="products.php" method="POST" style="flex: 1;" onsubmit="return confirm('Are you sure you want to delete this product?');">
+                        <input type="hidden" name="product_id" value="<?php echo $row['id']; ?>">
+                        <button type="submit" name="delete_product" class="btn-delete">Delete</button>
+                    </form>
+                </div>
             </div>
         <?php endwhile; ?>
     <?php else: ?>
-        <p style="font-size: 1.2em; font-weight: bold;">No products added yet!</p>
+        <p style="text-align: center; width: 100%; font-size: 18px; color: #555;">No products found.</p>
     <?php endif; ?>
 </div>
 
 <div class="footer">
     <p><b>Boutique Management System by Attiqa, Natasha & Tooba</b></p>
-    <p>Email: boutique@gmail.com | Phone: 0318-2345567 | Islamabad, Pakistan</p>
+    <p>Email: boutique@gmail.com | Phone: +923479130544 | Islamabad, Pakistan</p>
 </div>
 
 </body>
