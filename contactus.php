@@ -34,18 +34,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Contact Us - Boutique Management System</title>
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="style.css">
 </head>
+<?php include 'navbar.php'; ?>
 
 <body>
-<div class="navbar">
-    <a href="index.php">Home</a>
-    <a href="products.html">Products</a>
-    <a href="addproduct.php">Add Products</a>
-    <a href="orders.html">Orders</a>
-    <a href="cart.php">Cart</a>
-    <a href="about.php">About Us</a>
-    <a href="contactus.php">Contact Us</a>
+
 
     <?php if (isset($_SESSION['user_id'])): ?>
         <span style="color: white; font-weight: 600; margin-left: 10px;">Welcome, <?php echo htmlspecialchars($_SESSION['username']); ?></span>
@@ -92,7 +86,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             </tr>
             <tr>
                 <td><b>📞 Phone:</b></td>
-                <td>0318-2345567</td>
+                <td>+923479130544</td>
                 <td><b>⏰ Hours:</b></td>
                 <td>Mon - Sat (10AM - 8PM)</td>
             </tr>
