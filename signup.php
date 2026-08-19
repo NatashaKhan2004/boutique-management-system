@@ -46,8 +46,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Signup - Boutique Management System</title>
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="style.css">
 </head>
+<?php include 'navbar.php'; ?>
 <body>
     <main class="login-main">
         <h2>Create Account</h2>
