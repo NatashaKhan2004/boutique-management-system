@@ -2,28 +2,38 @@
 session_start();
 include 'db.php';
 
+// Protected Route: Redirect if user is not logged in
+if (!isset($_SESSION['user_id'])) {
+    header("Location: login.php");
+    exit();
+}
+
 $message = "";
 $error = "";
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $name = trim($_POST['productName']);
-    $price = trim($_POST['price']);
-    $quantity = trim($_POST['quantity']);
-    $category = trim($_POST['category']);
+// Form Submission Logic
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['add_product'])) {
+    $name = trim($_POST['name']);
+    $price = floatval($_POST['price']);
+    $description = trim($_POST['description']);
 
-    if (!empty($name) && !empty($price) && !empty($quantity) && !empty($category)) {
-        // Database me Product Insert Karein
-        $stmt = $conn->prepare("INSERT INTO products (name, price, stock, category) VALUES (?, ?, ?, ?)");
-        $stmt->bind_param("sdis", $name, $price, $quantity, $category);
-
-        if ($stmt->execute()) {
-            $message = "✅ Product Added Successfully!";
+    if (!empty($name) && $price > 0 && !empty($description)) {
+        $stmt = $conn->prepare("INSERT INTO products (name, price, description) VALUES (?, ?, ?)");
+        
+        if ($stmt === false) {
+            $error = "Database Error: " . $conn->error;
         } else {
-            $error = "❌ Failed to add product: " . $conn->error;
+            $stmt->bind_param("sds", $name, $price, $description);
+
+            if ($stmt->execute()) {
+                $message = "Product has been added successfully.";
+            } else {
+                $error = "Execution Error: " . $stmt->error;
+            }
+            $stmt->close();
         }
-        $stmt->close();
     } else {
-        $error = "Please fill in all fields.";
+        $error = "Please fill in all required fields correctly.";
     }
 }
 ?>
@@ -34,62 +44,72 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Add Product - Boutique Management System</title>
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .form-card {
+            max-width: 450px;
+            margin: 40px auto;
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; margin-bottom: 5px; font-weight: bold; }
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        .btn-submit {
+            width: 100%;
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 12px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .btn-submit:hover { background: #218838; }
+    </style>
 </head>
-
 <body>
-<div class="navbar">
-    <a href="index.php">Home</a>
-    <a href="products.html">Products</a>
-    <a href="addproduct.php">Add Products</a>
-    <a href="orders.html">Orders</a>
-    <a href="cart.html">Cart</a>
-    <a href="about.php">About Us</a>
-    <a href="contactus.html">Contact Us</a>
 
-    <?php if (isset($_SESSION['user_id'])): ?>
-        <span style="color: white; font-weight: 600; margin-left: 10px;">Welcome, <?php echo htmlspecialchars($_SESSION['username']); ?></span>
-        <a href="logout.php" style="color: tomato; font-weight: bold; margin-left: 10px;">Logout</a>
-    <?php else: ?>
-        <a href="login.php">Login</a>
-        <a href="signup.php">Signup</a>
-    <?php endif; ?>
-</div>
+<?php include 'navbar.php'; ?>
 
-<div class="cart-main"> 
-    <h2>Add New Product</h2>
+<div class="form-card">
+    <h2 style="text-align: center; margin-bottom: 20px;">Add New Product</h2>
 
     <?php if (!empty($message)): ?>
-        <p style="color: green; text-align: center; margin-bottom: 15px; font-weight: bold;"><?php echo $message; ?></p>
+        <p style="color: green; text-align: center; font-weight: bold; background: #e6ffe6; padding: 10px; border-radius: 5px;"><?php echo $message; ?></p>
     <?php endif; ?>
 
     <?php if (!empty($error)): ?>
-        <p style="color: red; text-align: center; margin-bottom: 15px; font-weight: bold;"><?php echo $error; ?></p>
+        <p style="color: red; text-align: center; font-weight: bold; background: #ffe6e6; padding: 10px; border-radius: 5px;"><?php echo $error; ?></p>
     <?php endif; ?>
 
-    <form action="addproduct.php" method="POST" class="product-form" id="productForm">
-        <label>Product Name</label>
-        <input type="text" name="productName" placeholder="Enter product name" required>
-
-        <label>Price ($)</label>
-        <input type="number" step="0.01" name="price" placeholder="Enter price" required>
-
-        <label>Quantity</label>
-        <input type="number" name="quantity" placeholder="Enter quantity" required>
-
-        <label>Category</label>
-        <input type="text" name="category" placeholder="Enter category" required>
-
-        <div class="buttons">
-            <button class="checkout-btn" type="submit">Add Product</button>
-            <button class="reset-btn" type="reset">Reset</button>
+    <form action="addproduct.php" method="POST">
+        <div class="form-group">
+            <label>Product Name</label>
+            <input type="text" name="name" required placeholder="e.g. Lawn Embroidered Suit">
         </div>
-    </form>
-</div>
 
-<div class="footer">
-    <p><b>Boutique Management System by Attiqa, Natasha & Tooba</b></p>
-    <p>Email: boutique@gmail.com | Phone: 0318-2345567 | Islamabad, Pakistan</p>
+        <div class="form-group">
+            <label>Price (PKR)</label>
+            <input type="number" step="0.01" name="price" required placeholder="e.g. 4500">
+        </div>
+
+        <div class="form-group">
+            <label>Description</label>
+            <textarea name="description" rows="4" required placeholder="Enter product details..."></textarea>
+        </div>
+
+        <button type="submit" name="add_product" class="btn-submit">Add Product</button>
+    </form>
 </div>
 
 </body>
