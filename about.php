@@ -7,27 +7,11 @@ session_start();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>About Us - Boutique Management System</title>
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<div class="navbar">
-    <a href="index.php">Home</a>
-    <a href="products.html">Products</a>
-    <a href="addProduct.html">Add Products</a>
-    <a href="orders.html">Orders</a>
-    <a href="cart.html">Cart</a>
-    <a href="about.php">About Us</a>
-    <a href="contactus.html">Contact Us</a>
-
-    <?php if (isset($_SESSION['user_id'])): ?>
-        <span style="color: white; font-weight: 600; margin-left: 10px;">Welcome, <?php echo htmlspecialchars($_SESSION['username']); ?></span>
-        <a href="logout.php" style="color: tomato; font-weight: bold; margin-left: 10px;">Logout</a>
-    <?php else: ?>
-        <a href="login.php">Login</a>
-        <a href="signup.php">Signup</a>
-    <?php endif; ?>
-</div>
+<?php include 'navbar.php'; ?>
 
 <div class="about-main">
     <h2>✨ About Our Boutique ✨</h2>
@@ -106,7 +90,7 @@ session_start();
     
     <h3>📞 Contact Us</h3>
     <p><b>Email:</b> boutique@gmail.com</p>
-    <p><b>Phone:</b> 0318-2345567</p>
+    <p><b>Phone:</b> +923479130544</p>
     <p><b>Location:</b> Islamabad, Pakistan</p>
 </div>
 
