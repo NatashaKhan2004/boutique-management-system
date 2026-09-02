@@ -16,7 +16,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['login'])) {
 
         if ($result->num_rows === 1) {
             $user = $result->fetch_assoc();
-            if ($password === $user['password'] || password_verify($password, $user['password'])) {
+            
+            // Sir's Instruction: Removed plain text check ($password === $user['password'] ||)
+            if (password_verify($password, $user['password'])) {
                 $_SESSION['user_id'] = $user['id'];
                 $_SESSION['username'] = $user['username'];
                 $_SESSION['login_success'] = "Login Successful! Welcome, " . $user['username'];
@@ -35,7 +37,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['login'])) {
     }
 }
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -106,15 +107,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['login'])) {
         }
     </style>
 </head>
-<?php include 'navbar.php'; ?>
 <body>
 
+<?php include 'navbar.php'; ?>
+
+<div class="user-status-bar" style="text-align: right; padding: 10px 20px; background: #333;">
     <?php if (isset($_SESSION['user_id'])): ?>
         <span style="color: white; font-weight: 600; margin-left: 10px;">Welcome, <?php echo htmlspecialchars($_SESSION['username']); ?></span>
         <a href="logout.php" style="color: tomato; font-weight: bold; margin-left: 10px;">Logout</a>
     <?php else: ?>
-        <a href="login.php">Login</a>
-        <a href="signup.php">Signup</a>
+        <a href="login.php" style="color: white; margin-right: 10px;">Login</a>
+        <a href="signup.php" style="color: white;">Signup</a>
     <?php endif; ?>
 </div>
 
@@ -152,5 +155,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['login'])) {
     <p>Email: boutique@gmail.com | Phone: +923479130544 | Islamabad, Pakistan</p>
 </div>
 
+<script src="js/storage.js"></script>
 </body>
 </html>
