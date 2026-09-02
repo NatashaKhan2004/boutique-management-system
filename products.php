@@ -31,8 +31,11 @@ if (isset($_POST['add_to_cart'])) {
             ];
         }
 
-        // Deduct stock if stock column exists
-        $conn->query("UPDATE products SET stock = stock - 1 WHERE id = $product_id AND stock > 0");
+        // Prepared Statement for Stock Update
+        $update_stmt = $conn->prepare("UPDATE products SET stock = stock - 1 WHERE id = ? AND stock > 0");
+        $update_stmt->bind_param("i", $product_id);
+        $update_stmt->execute();
+        $update_stmt->close();
 
         $msg = "Product added to cart successfully!";
     }
