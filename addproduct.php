@@ -15,15 +15,17 @@ $error = "";
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['add_product'])) {
     $name = trim($_POST['name']);
     $price = floatval($_POST['price']);
+    $category = trim($_POST['category']);
+    $stock = intval($_POST['stock']);
     $description = trim($_POST['description']);
 
-    if (!empty($name) && $price > 0 && !empty($description)) {
-        $stmt = $conn->prepare("INSERT INTO products (name, price, description) VALUES (?, ?, ?)");
+    if (!empty($name) && $price > 0 && !empty($category) && $stock >= 0 && !empty($description)) {
+        $stmt = $conn->prepare("INSERT INTO products (name, price, category, stock, description) VALUES (?, ?, ?, ?, ?)");
         
         if ($stmt === false) {
             $error = "Database Error: " . $conn->error;
         } else {
-            $stmt->bind_param("sds", $name, $price, $description);
+            $stmt->bind_param("sdsis", $name, $price, $category, $stock, $description);
 
             if ($stmt->execute()) {
                 $message = "Product has been added successfully.";
@@ -44,7 +46,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['add_product'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Add Product - Boutique Management System</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="css/style.css">
     <style>
         .form-card {
             max-width: 450px;
@@ -56,7 +58,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['add_product'])) {
         }
         .form-group { margin-bottom: 15px; }
         .form-group label { display: block; margin-bottom: 5px; font-weight: bold; }
-        .form-group input, .form-group textarea {
+        .form-group input, .form-group textarea, .form-group select {
             width: 100%;
             padding: 10px;
             border: 1px solid #ccc;
@@ -99,8 +101,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['add_product'])) {
         </div>
 
         <div class="form-group">
+            <label>Category</label>
+            <input type="text" name="category" required placeholder="e.g. Unstitched, Ready to Wear">
+        </div>
+
+        <div class="form-group">
             <label>Price (PKR)</label>
             <input type="number" step="0.01" name="price" required placeholder="e.g. 4500">
+        </div>
+
+        <div class="form-group">
+            <label>Available Stock / Quantity</label>
+            <input type="number" name="stock" min="1" required placeholder="e.g. 10">
         </div>
 
         <div class="form-group">
@@ -112,5 +124,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['add_product'])) {
     </form>
 </div>
 
+<script src="js/storage.js"></script>
 </body>
 </html>
