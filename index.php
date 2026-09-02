@@ -9,15 +9,17 @@ session_start();
     <title>Home - Boutique Management System</title>
     <link rel="stylesheet" href="style.css">
 </head>
-<?php include 'navbar.php'; ?>
 <body>
-    
+
+<?php include 'navbar.php'; ?>
+
+<div class="user-status-bar" style="text-align: right; padding: 10px 20px; background: #333;">
     <?php if (isset($_SESSION['user_id'])): ?>
         <span style="color: white; font-weight: 600; margin-left: 10px;">Welcome, <?php echo htmlspecialchars($_SESSION['username']); ?></span>
-        <a href="logout.php" style="color: tomato; font-weight: bold;">Logout</a>
+        <a href="logout.php" style="color: tomato; font-weight: bold; margin-left: 10px;">Logout</a>
     <?php else: ?>
-        <a href="login.php">Login</a>
-        <a href="signup.php">Signup</a>
+        <a href="login.php" style="color: white; margin-right: 10px;">Login</a>
+        <a href="signup.php" style="color: white;">Signup</a>
     <?php endif; ?>
 </div>
 
@@ -43,6 +45,7 @@ session_start();
     <p>Email: boutique@gmail.com | Phone: +923479130544 | Islamabad, Pakistan</p>
 </div>
 
+<script src="js/storage.js"></script>
 <script>
 let images = [
     "https://i.pinimg.com/736x/bc/b5/87/bcb587f570686f2aaa308a76a2371a1f.jpg",
@@ -57,8 +60,10 @@ let interval;
 
 function updateOneImage() {
     let img = document.getElementById("sliderImage");
-    img.src = images[currentIndex];
-    currentIndex = (currentIndex + 1) % images.length;
+    if (img) {
+        img.src = images[currentIndex];
+        currentIndex = (currentIndex + 1) % images.length;
+    }
 }
 
 function startSlider() {
