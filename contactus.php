@@ -36,17 +36,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <title>Contact Us - Boutique Management System</title>
     <link rel="stylesheet" href="style.css">
 </head>
-<?php include 'navbar.php'; ?>
-
 <body>
 
+<?php include 'navbar.php'; ?>
 
+<div class="user-status-bar" style="text-align: right; padding: 10px 20px; background: #333;">
     <?php if (isset($_SESSION['user_id'])): ?>
         <span style="color: white; font-weight: 600; margin-left: 10px;">Welcome, <?php echo htmlspecialchars($_SESSION['username']); ?></span>
         <a href="logout.php" style="color: tomato; font-weight: bold; margin-left: 10px;">Logout</a>
     <?php else: ?>
-        <a href="login.php">Login</a>
-        <a href="signup.php">Signup</a>
+        <a href="login.php" style="color: white; margin-right: 10px;">Login</a>
+        <a href="signup.php" style="color: white;">Signup</a>
     <?php endif; ?>
 </div>
 
@@ -99,5 +99,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <p>Email: boutique@gmail.com | Phone: +923479130544 | Islamabad, Pakistan</p>
 </div>
 
+<script src="js/storage.js"></script>
 </body>
 </html>
