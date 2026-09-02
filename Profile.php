@@ -69,5 +69,6 @@ session_start();
     </tr>
 </table>
 
+<script src="js/storage.js"></script>
 </body>
 </html>
