@@ -1,4 +1,5 @@
 <?php
+session_start();
 include 'db.php';
 
 $message = "";
@@ -48,8 +49,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <title>Signup - Boutique Management System</title>
     <link rel="stylesheet" href="style.css">
 </head>
-<?php include 'navbar.php'; ?>
 <body>
+
+<?php include 'navbar.php'; ?>
+
     <main class="login-main">
         <h2>Create Account</h2>
 
@@ -76,5 +79,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             Already have an account? <a href="login.php" style="color: teal; text-align: center;">Login here</a>
         </p>
     </main>
+
+<script src="js/storage.js"></script>
 </body>
 </html>
