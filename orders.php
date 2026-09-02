@@ -60,9 +60,9 @@ $result = $conn->query($sql);
         }
     </style>
 </head>
-<?php include 'navbar.php'; ?>
 <body>
 
+<?php include 'navbar.php'; ?>
 
 <div class="orders-container">
     <h2>All Placed Orders</h2>
@@ -108,5 +108,6 @@ $result = $conn->query($sql);
     </table>
 </div>
 
+<script src="js/storage.js"></script>
 </body>
 </html>
