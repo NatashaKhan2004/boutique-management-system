@@ -71,10 +71,9 @@ foreach ($_SESSION['cart'] as $item) {
         }
     </style>
 </head>
-<?php include 'navbar.php'; ?>
 <body>
 
-
+<?php include 'navbar.php'; ?>
 
 <div class="cart-container">
     <h2>Your Shopping Cart</h2>
@@ -117,5 +116,6 @@ foreach ($_SESSION['cart'] as $item) {
     <?php endif; ?>
 </div>
 
+<script src="js/storage.js"></script>
 </body>
 </html>
