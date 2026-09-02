@@ -96,8 +96,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['place_order'])) {
         }
     </style>
 </head>
-<?php include 'navbar.php'; ?>
 <body>
+
+<?php include 'navbar.php'; ?>
 
 <div class="checkout-card">
     <h2>Checkout & Shipping Details</h2>
@@ -131,5 +132,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['place_order'])) {
     </form>
 </div>
 
+<script src="js/storage.js"></script>
 </body>
 </html>
