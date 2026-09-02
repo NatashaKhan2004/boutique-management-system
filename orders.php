@@ -2,19 +2,29 @@
 session_start();
 include 'db.php';
 
-// Fetch order success message from checkout session
+// Auth Guard check
+if (!isset($_SESSION['user_id'])) {
+    header("Location: login.php");
+    exit();
+}
+
+$user_id = $_SESSION['user_id'];
+
+// Fetch order success message
 $order_success = $_SESSION['order_success'] ?? "";
 unset($_SESSION['order_success']);
 
-// Fetch all orders with items
-$sql = "SELECT o.*, GROUP_CONCAT(CONCAT(p.name, ' (x', oi.quantity, ')') SEPARATOR ', ') AS item_details 
-        FROM orders o 
-        LEFT JOIN order_items oi ON o.id = oi.order_id 
-        LEFT JOIN products p ON oi.product_id = p.id 
-        GROUP BY o.id 
-        ORDER BY o.id DESC";
-
-$result = $conn->query($sql);
+// Prepared statement filtering by logged-in user_id
+$stmt = $conn->prepare("SELECT o.*, GROUP_CONCAT(CONCAT(p.name, ' (x', oi.quantity, ')') SEPARATOR ', ') AS item_details 
+                        FROM orders o 
+                        LEFT JOIN order_items oi ON o.id = oi.order_id 
+                        LEFT JOIN products p ON oi.product_id = p.id 
+                        WHERE o.user_id = ?
+                        GROUP BY o.id 
+                        ORDER BY o.id DESC");
+$stmt->bind_param("i", $user_id);
+$stmt->execute();
+$result = $stmt->get_result();
 ?>
 
 <!DOCTYPE html>
@@ -65,7 +75,7 @@ $result = $conn->query($sql);
 <?php include 'navbar.php'; ?>
 
 <div class="orders-container">
-    <h2>All Placed Orders</h2>
+    <h2>Your Orders</h2>
 
     <?php if (!empty($order_success)): ?>
         <div class="success-msg"><?php echo htmlspecialchars($order_success); ?></div>
