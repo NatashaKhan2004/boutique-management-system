@@ -12,8 +12,13 @@ if (isset($_POST['remove_item'])) {
     $product_id = intval($_POST['product_id']);
     if (isset($_SESSION['cart'][$product_id])) {
         $qty = $_SESSION['cart'][$product_id]['quantity'];
-        // Restore stock in database
-        $conn->query("UPDATE products SET stock = stock + $qty WHERE id = $product_id");
+        
+        // Restore stock in database using Prepared Statement
+        $stmt = $conn->prepare("UPDATE products SET stock = stock + ? WHERE id = ?");
+        $stmt->bind_param("ii", $qty, $product_id);
+        $stmt->execute();
+        $stmt->close();
+
         unset($_SESSION['cart'][$product_id]);
     }
 }
