@@ -2,6 +2,12 @@
 session_start();
 include 'db.php';
 
+// Auth Guard Check
+if (!isset($_SESSION['user_id'])) {
+    header("Location: login.php");
+    exit();
+}
+
 // Initialize cart if empty
 if (!isset($_SESSION['cart'])) {
     $_SESSION['cart'] = [];
