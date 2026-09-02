@@ -99,5 +99,6 @@ session_start();
     <p>Email: boutique@gmail.com | Phone: 0318-2345567 | Islamabad, Pakistan</p>
 </div>
 
+<script src="js/storage.js"></script>
 </body>
 </html>
